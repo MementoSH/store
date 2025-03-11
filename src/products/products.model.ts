@@ -24,6 +24,13 @@ export class Product extends Model<Product, ProductCreationAttrs> {
   description: string;
 
   @ApiProperty({
+    example: 'category',
+    description: 'product category',
+  })
+  @Column({ type: DataType.STRING, allowNull: false })
+  category: string;
+
+  @ApiProperty({
     example: '999.9',
     description: 'product price',
   })

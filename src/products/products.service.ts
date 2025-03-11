@@ -8,12 +8,27 @@ export class ProductsService {
   constructor(
     @InjectModel(Product) private productRepository: typeof Product,
   ) {}
+
   async create(dto: CreateProductDto) {
     return await this.productRepository.create(dto);
   }
+
   async get(id: number) {
     return await this.productRepository.findByPk(id);
   }
+
+  async getAll() {
+    return await this.productRepository.findAll();
+  }
+
+  async getCategory(category: string) {
+    return await this.productRepository.findAll({
+      where: {
+        category: category,
+      },
+    });
+  }
+
   async edit(dto: CreateProductDto, id: string) {
     const product = await this.get(Number(id));
     if (!product) {
