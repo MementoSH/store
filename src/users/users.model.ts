@@ -4,6 +4,7 @@ import { Column, DataType, Model, Table } from 'sequelize-typescript';
 interface UserCreationAttrs {
   email: string;
   password: string;
+  role: string;
 }
 
 @Table({
@@ -15,9 +16,16 @@ export class User extends Model<User, UserCreationAttrs> {
   email: string;
 
   @ApiProperty({
-    example: 'some strong password',
+    example: 'password',
     description: "User's password",
   })
   @Column({ type: DataType.STRING, allowNull: false })
   password: string;
+
+  @ApiProperty({
+    example: 'admin',
+    description: "User's role",
+  })
+  @Column({ type: DataType.STRING, allowNull: false })
+  role: string;
 }
