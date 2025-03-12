@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { User } from 'src/users/users.model';
@@ -14,53 +19,100 @@ export class AuthService {
   ) {}
 
   async login(userDto: CreateUserDto, res: Response) {
-    const user = await this.validateUser(userDto);
-    const token = await this.generateToken(user);
-    res.cookie('access_token', token, {
-      httpOnly: true,
-    });
+    try {
+      const user = await this.validateUser(userDto);
+      const token = await this.generateToken(user);
+      res.cookie('access_token', token, {
+        httpOnly: true,
+      });
 
-    return { access_token: token };
+      return { access_token: token };
+    } catch (e) {
+      throw new HttpException(
+        `Unknown Server Error: ${e}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async register(userDto: CreateUserDto, res: Response) {
-    const candidate = await this.userService.getUserByEmail(userDto.email);
-    if (candidate) {
-      throw new UnauthorizedException('Email already exists');
+    try {
+      const candidate = await this.userService.getUserByEmail(userDto.email);
+      if (candidate) {
+        throw new UnauthorizedException('Email already exists');
+      }
+      const hashedPassword = await bcrypt.hash(userDto.password, 10);
+      const user = await this.userService.createUser({
+        ...userDto,
+        password: hashedPassword,
+      });
+      const token = await this.generateToken(user);
+      res.cookie('access_token', token, {
+        httpOnly: true,
+      });
+      return { access_token: token };
+    } catch (e) {
+      throw new HttpException(
+        `Unknown Server Error: ${e}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
-    const hashedPassword = await bcrypt.hash(userDto.password, 10);
-    const user = await this.userService.createUser({
-      ...userDto,
-      password: hashedPassword,
-    });
-    const token = await this.generateToken(user);
-    res.cookie('access_token', token, {
-      httpOnly: true,
-    });
-    return { access_token: token };
+  }
+
+  async logout(res: Response) {
+    try {
+      res.clearCookie('access_token');
+      return { message: 'Successfull logout' };
+    } catch (e) {
+      throw new HttpException(
+        `Unknown Server Error: ${e}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   private async generateToken(user: User) {
-    const payload = { sub: user.id, email: user.email, role: user.role };
-    return await this.jwtService.signAsync(payload);
+    try {
+      const payload = { sub: user.id, email: user.email, role: user.role };
+      return await this.jwtService.signAsync(payload);
+    } catch (e) {
+      throw new HttpException(
+        `Unknown Server Error: ${e}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async extractJwtFromCookies(req: Request) {
-    return req.cookies['access_token'];
+    try {
+      return req.cookies['access_token'];
+    } catch (e) {
+      throw new HttpException(
+        `Unknown Server Error: ${e}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async validateUser(userDto: CreateUserDto) {
-    const user = await this.userService.getUserByEmail(userDto.email);
-    if (!user) {
+    try {
+      const user = await this.userService.getUserByEmail(userDto.email);
+      if (!user) {
+        throw new UnauthorizedException('Invalid email or password');
+      }
+      const passwordEquals = await bcrypt.compare(
+        userDto.password,
+        user.password,
+      );
+      if (user && passwordEquals) {
+        return user;
+      }
       throw new UnauthorizedException('Invalid email or password');
+    } catch (e) {
+      throw new HttpException(
+        `Unknown Server Error: ${e}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
-    const passwordEquals = await bcrypt.compare(
-      userDto.password,
-      user.password,
-    );
-    if (user && passwordEquals) {
-      return user;
-    }
-    throw new UnauthorizedException('Invalid email or password');
   }
 }

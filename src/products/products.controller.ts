@@ -14,7 +14,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { Product } from './products.model';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('products')
 export class ProductsController {
@@ -22,6 +22,7 @@ export class ProductsController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(['admin', 'manager'])
+  @ApiOperation({ summary: 'Creates a product' })
   @ApiResponse({ type: Product })
   @Post('/create')
   create(@Body() dto: CreateProductDto) {
@@ -29,6 +30,7 @@ export class ProductsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Gets a product by its id' })
   @ApiResponse({ type: Product })
   @Get('/getby/:id')
   get(@Param('id') id: number) {
@@ -36,6 +38,7 @@ export class ProductsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Gets all products' })
   @ApiResponse({ type: Product })
   @Get('/get/all')
   getAll() {
@@ -43,6 +46,7 @@ export class ProductsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Gets all products with given category' })
   @ApiResponse({ type: Product })
   @Get('/get/:category')
   getCategory(@Param('category') category: string) {
@@ -51,14 +55,16 @@ export class ProductsController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(['admin', 'manager'])
+  @ApiOperation({ summary: 'Updates product row with given data' })
   @ApiResponse({ type: Product })
   @Put('/edit/:id')
-  edit(@Body() dto: CreateProductDto, @Param('id') id: string) {
+  edit(@Body() dto: CreateProductDto, @Param('id') id: number) {
     return this.productService.edit(dto, id);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(['admin', 'manager'])
+  @ApiOperation({ summary: 'Deletes product row with given id' })
   @ApiResponse({ type: Product })
   @Delete('/delete/:id')
   delete(@Param('id') id: string) {

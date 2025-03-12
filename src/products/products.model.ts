@@ -1,5 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  BelongsToMany,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import { Location } from 'src/locations/locations.model';
+import { OrderProduct } from 'src/orders/order-products.model';
+import { Order } from 'src/orders/order.model';
 
 interface ProductCreationAttrs {
   name: string;
@@ -31,6 +42,16 @@ export class Product extends Model<Product, ProductCreationAttrs> {
   category: string;
 
   @ApiProperty({
+    example: 1,
+    description: 'location id',
+  })
+  @ForeignKey(() => Location)
+  location_id: number;
+
+  @BelongsTo(() => Location, { foreignKey: 'location_id', as: 'locationId' })
+  locationId: Location;
+
+  @ApiProperty({
     example: '999.9',
     description: 'product price',
   })
@@ -38,9 +59,12 @@ export class Product extends Model<Product, ProductCreationAttrs> {
   price: number;
 
   @ApiProperty({
-    example: '100',
+    example: 100,
     description: 'product quantity',
   })
   @Column({ type: DataType.INTEGER, allowNull: false })
   stock_quantity: number;
+
+  @BelongsToMany(() => Order, () => OrderProduct)
+  orders: Order[];
 }

@@ -1,10 +1,16 @@
 import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
-import { ConfigModule } from '@nestjs/config';
-import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from './users/users.model';
 import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
+import { OrdersModule } from './orders/orders.module';
+import { ConfigModule } from '@nestjs/config';
+import { LocationsModule } from './locations/locations.module';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { User } from './users/users.model';
+import { Order } from './orders/order.model';
+import { Product } from './products/products.model';
+import { Location } from './locations/locations.model';
+import { OrderProduct } from './orders/order-products.model';
 
 @Module({
   imports: [
@@ -18,12 +24,14 @@ import { ProductsModule } from './products/products.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [User],
+      models: [User, Order, Product, Location, OrderProduct],
       autoLoadModels: true,
     }),
     UsersModule,
     AuthModule,
     ProductsModule,
+    OrdersModule,
+    LocationsModule,
   ],
 })
 export class AppModule {}

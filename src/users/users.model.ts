@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import { Order } from 'src/orders/order.model';
 
 interface UserCreationAttrs {
   email: string;
@@ -28,4 +29,7 @@ export class User extends Model<User, UserCreationAttrs> {
   })
   @Column({ type: DataType.STRING, allowNull: false })
   role: string;
+
+  @HasMany(() => Order)
+  orders: Order[];
 }
