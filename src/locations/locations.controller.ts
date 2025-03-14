@@ -8,12 +8,12 @@ import {
   Param,
   UseGuards,
 } from '@nestjs/common';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { LocationsService } from './locations.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Location } from './locations.model';
 
 @Controller('locations')

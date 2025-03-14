@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateLocationDto } from './dto/create-location.dto';
 import { InjectModel } from '@nestjs/sequelize';
+import { CreateLocationDto } from './dto/create-location.dto';
 import { Location } from './locations.model';
 
 @Injectable()

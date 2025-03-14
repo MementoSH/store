@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
+import { SequelizeModule } from '@nestjs/sequelize';
 import { LocationsController } from './locations.controller';
 import { LocationsService } from './locations.service';
-import { SequelizeModule } from '@nestjs/sequelize';
 import { Location } from './locations.model';
 import { AuthModule } from 'src/auth/auth.module';
 

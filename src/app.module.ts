@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
-import { ConfigModule } from '@nestjs/config';
 import { LocationsModule } from './locations/locations.module';
-import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './users/users.model';
 import { Order } from './orders/order.model';
 import { Product } from './products/products.model';
