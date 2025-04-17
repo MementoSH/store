@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { JwtService } from '@nestjs/jwt';
 import { Order } from './order.model';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { Request } from 'express';
-import { JwtService } from '@nestjs/jwt';
 import { OrderProduct } from './order-products.model';
 import { Product } from 'src/products/products.model';
 

@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { Product } from 'src/products/products.model';
 import { Order } from './order.model';
